@@ -17,19 +17,12 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Scarica versione esistente del calendario
-        run: |
-          mkdir -p public
-          curl --fail --location --retry 3 "https://keen-gecko-48b725.netlify.app/" -o public/index.html
-          test -s public/index.html
-          grep -qi '<html' public/index.html
-          for file in icon-192.png icon-512.png manifest.webmanifest; do
-            curl --fail --location "https://keen-gecko-48b725.netlify.app/$file" -o "public/$file" || true
-          done
-          touch public/.nojekyll
+      - uses: actions/checkout@v4
+      - name: Verifica file sito
+        run: test -s index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: .
       - id: deployment
         uses: actions/deploy-pages@v4
